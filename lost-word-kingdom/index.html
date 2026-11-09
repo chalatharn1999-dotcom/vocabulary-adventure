@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vocabulary Adventure – The Lost Word Kingdom</title>
+<style>
+:root{--bg:linear-gradient(160deg,#2b1055,#7597de)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font:16px/1.45 'Segoe UI',system-ui,'Noto Sans Thai',sans-serif;color:#fff;background:var(--bg) fixed;transition:background .6s}
+header{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:8px 10px;background:#000a;backdrop-filter:blur(6px)}
+.pill{background:#fff2;padding:3px 10px;border-radius:20px;font-weight:700;font-size:14px}
+#pb{flex:1 1 100%;height:10px;background:#fff3;border-radius:6px;overflow:hidden}
+#bar{height:100%;width:0;background:linear-gradient(90deg,#ffd54a,#ff7bd5);transition:width .5s}
+main{max-width:900px;margin:0 auto;padding:12px;text-align:center}
+h1{font-size:clamp(26px,6vw,44px);margin:8px 0;text-shadow:0 3px 12px #0008}
+h2{margin:6px 0}
+.card{background:#0007;border:2px solid #fff4;border-radius:20px;padding:16px;margin:12px 0;animation:pop .4s}
+.btn{background:linear-gradient(#ffd54a,#ff9800);color:#3a2100;border:0;border-radius:14px;padding:10px 20px;font-size:17px;font-weight:800;cursor:pointer;margin:6px;box-shadow:0 4px 0 #b36b00}
+.btn:active{transform:translateY(3px);box-shadow:none}.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.ghost{background:#fff3;color:#fff;box-shadow:none;font-size:14px;padding:6px 12px}
+.ib{background:#fff3;border:0;color:#fff;border-radius:10px;font-size:18px;padding:4px 10px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.world{border-radius:18px;padding:14px;cursor:pointer;border:2px solid #fff5;transition:.2s}
+.world:hover{transform:translateY(-4px) scale(1.03)}.world.lock{filter:grayscale(1) brightness(.6);cursor:not-allowed}
+.hero{font-size:60px;animation:bob 2s ease-in-out infinite}
+.big{font-size:64px;animation:bob 2.5s ease-in-out infinite}
+.row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+input#ans{font-size:22px;padding:10px;border-radius:12px;border:3px solid #ffd54a;width:min(320px,90%);text-align:center}
+.g{color:#7dffa0;font-size:19px}.r{color:#ff8a8a;font-size:19px}
+#fb{min-height:30px;margin:6px}
+.lt2 span,.lt{display:inline-block;min-width:30px;font:700 24px monospace;margin:2px;padding:2px 4px;border-radius:6px;background:#fff2}
+.good{background:#1fa34a!important;color:#fff}.bad{background:#d33!important;color:#fff}
+input.lt{width:36px;text-align:center;border:2px solid #ffd54a;color:#000;background:#fff}
+.gap{display:inline-block;width:20px}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.chip{background:#fff;color:#222;border-radius:12px;padding:12px 8px;margin:8px 0;font-weight:700;touch-action:none;user-select:none;-webkit-user-select:none;border:3px solid transparent}
+.chip.w{background:#ffd54a;cursor:grab}.chip.t{background:#e8f0ff}
+.chip.sel{border-color:#ff4081;transform:scale(1.05)}.chip.ok{background:#1fa34a;color:#fff;opacity:.85}
+.ghost{position:fixed;transform:translate(-50%,-50%);pointer-events:none;z-index:50;opacity:.9;width:150px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.wc{background:#fff2;border-radius:16px;padding:12px;cursor:pointer;border:2px dashed #fff6}
+.wc .sec{display:none;text-align:left;font-size:14px}.wc.open .sec{display:block}.wc.open{border-style:solid;background:#fff3}
+.wc h3{margin:4px}
+.rc{text-align:left;background:#fff2;border-radius:12px;padding:8px 12px;margin:8px 0}
+.shake{animation:shake .4s}
+.modal{position:fixed;inset:0;background:#000c;z-index:20;overflow:auto;padding:10px}
+.modal .card{max-width:640px;margin:20px auto;background:#1b1340;text-align:left}
+.stat{display:inline-block;background:#fff2;border-radius:12px;padding:8px 12px;margin:4px;font-weight:700}
+.fl{position:fixed;top:100%;font-size:26px;opacity:.5;pointer-events:none;animation:rise 12s linear infinite}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+@keyframes bob{50%{transform:translateY(-10px)}}
+@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes rise{to{top:-10%;transform:rotate(360deg)}}
+@media(max-width:520px){.mt{gap:6px}.chip{font-size:14px}}
+html{-webkit-text-size-adjust:100%}
+body{min-height:100vh;min-height:100dvh;-webkit-tap-highlight-color:transparent;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom)}
+header{padding-top:max(8px,env(safe-area-inset-top))}
+button,.world,input,.chip{touch-action:manipulation}.chip.w{touch-action:none}
+.btn,.ib{min-height:44px}.ib{min-width:44px}
+input.lt{font-size:22px;height:46px;width:40px;padding:0}input#ans{font-size:22px}
+@media(min-width:768px){main{max-width:960px;font-size:18px}.clue{font-size:40px}.lt2 span,.lt{font-size:30px;min-width:38px}input.lt{width:48px;height:54px;font-size:28px}.btn{font-size:20px;padding:12px 26px}.chip{font-size:19px}}
+@media(max-width:480px){.pill{font-size:12px;padding:2px 8px}main{padding:8px}.card{padding:12px;border-radius:16px}input.lt{width:34px;height:42px;margin:1px}.lt2 span,.lt{min-width:26px;font-size:20px}.grid{grid-template-columns:1fr 1fr}.world h3{font-size:15px}.hero{font-size:46px}}
+@media(max-height:480px) and (orientation:landscape){.hero,.big{font-size:36px;animation:none}header{position:static}}
+</style></head><body>
+<div class="fl" style="left:8%">✨</div><div class="fl" style="left:35%;animation-delay:3s">⭐</div><div class="fl" style="left:62%;animation-delay:6s">✨</div><div class="fl" style="left:88%;animation-delay:9s">🦋</div>
+<header><span class="pill">🏆 <span id="sc">0</span></span><span class="pill">✅ <span id="ok">0</span></span><span class="pill">❌ <span id="bd">0</span></span><span class="pill" id="rem"></span>
+<button class="ib" id="mu">🔊</button><button class="ib" id="hm">🏰</button><button class="ib" id="ds">📊</button><div id="pb"><div id="bar"></div></div></header>
+<main id="stage"></main>
+<script>
+const V=[
+['horizontal axis','แกนแนวนอน','The line on a graph that goes left to right.','The horizontal axis shows the days.','↔️'],
+['vertical axis','แกนแนวตั้ง','The line on a graph that goes up and down.','The vertical axis shows the height.','↕️'],
+['Cartesian plane','ระนาบที่ลากเส้นจำนวน','A flat grid with two number lines used to find points.','We plot the point on the Cartesian plane.','📈'],
+['thermometer','เทอร์โมมิเตอร์','A tool that measures how hot or cold something is.','The thermometer says 30 degrees.','🌡️'],
+['energy','พลังงาน','The power that makes things move, grow or work.','Food gives our body energy.','⚡'],
+['heat energy','พลังงานความร้อน','The warmth that comes from hot things like the sun or fire.','The sun gives us heat energy.','🔥'],
+['geographer','นักภูมิศาสตร์','A person who studies the Earth, its land and its places.','The geographer drew a map.','🗺️'],
+['atmosphere','บรรยากาศ','The layer of air around the Earth.','The atmosphere protects us from the sun.','🌍'],
+['distribution','การกระจาย','The way things are spread out over an area.','The distribution of trees is not equal.','📊'],
+['population','ประชากร','The number of people who live in a place.','The population of Bangkok is very large.','👨‍👩‍👧‍👦'],
+['crime','อาชญากรรม','An action that is against the law.','The police stop crime.','🚔'],
+['wildlife','สัตว์ป่า','Animals and plants that live in nature, not on farms.','Tigers are wildlife.','🐯']];
+const W=[
+{n:'MATHS',t:'The Coordinate Kingdom',i:'📐',h:'🧙‍♂️',b:'Coordinate Wizard',w:[0,1,2],bg:'linear-gradient(160deg,#1e3c72,#2a9df4)'},
+{n:'SCIENCE',t:'The Energy Laboratory',i:'🔬',h:'👩‍🔬',b:'Energy Scientist',w:[3,4,5],bg:'linear-gradient(160deg,#8e2de2,#ff6a88)'},
+{n:'SOCIAL STUDIES',t:'The Geography Realm',i:'🧭',h:'🧝',b:'Realm Explorer',w:[6,7,8],bg:'linear-gradient(160deg,#134e5e,#71b280)'},
+{n:'LANGUAGE',t:'The Wild Forest',i:'🌳',h:'🦊',b:'Forest Guardian',w:[9,10,11],bg:'linear-gradient(160deg,#0f3d1e,#c6a700)'}];
+const MN=['Word Discovery','Word Matching','Spelling Challenge','Definition Detective','Missing Letters'];
+const B=[[9,'The ___ of a city tells us how many people live there.'],[3,'A ___ shows if the water is hot or cold.'],[10,'Police work every day to stop ___ in our town.'],[2,'We use the ___ to show where a point is with x and y.'],[6,'A ___ studies maps, countries and land.'],[11,'Tigers and elephants in the jungle are ___.']];
+const BG0='linear-gradient(160deg,#2b1055,#7597de)',TOT=21,MAX=540,KEY='lwk_v1';
+const $=s=>document.querySelector(s),st=$('#stage');
+const sh=a=>{a=a.slice();for(let i=a.length;i>1;){const j=Math.random()*i--|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const norm=s=>s.toLowerCase().replace(/\s+/g,' ').trim();
+const init=()=>({score:0,ok:0,bad:0,done:{},seen:{},miss:{},badge:[],boss:0});
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}S=S||init();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const n=()=>Object.keys(S.done).length;
+function hud(){$('#sc').textContent=S.score;$('#ok').textContent=S.ok;$('#bd').textContent=S.bad;$('#bar').style.width=n()/TOT*100+'%';$('#rem').textContent='⭐ '+n()+' · '+(TOT-n())+' missions left'}
+function show(h){st.innerHTML=h;scrollTo(0,0)}
+function bg(b){document.body.style.setProperty('--bg',b)}
+/* ---------- sound ---------- */
+let AC,mute=0,mi,started=0;
+function tn(f,t,d,ty,v){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain(),T=AC.currentTime+t;o.type=ty||'sine';o.frequency.value=f;g.gain.setValueAtTime(v,T);g.gain.exponentialRampToValueAtTime(.001,T+d);o.connect(g);g.connect(AC.destination);o.start(T);o.stop(T+d)}catch(e){}}
+const SF={ok:[[660,.1],[880,.15]],bad:[[200,.2,'sawtooth'],[150,.25,'sawtooth']],mission:[[523,.12],[659,.12],[784,.25]],world:[[523,.12],[659,.12],[784,.12],[1047,.4]],win:[[523,.15],[659,.15],[784,.15],[1047,.2],[784,.15],[1047,.6]]};
+function sfx(k){if(mute)return;let t=0;SF[k].forEach(([f,d,ty])=>{tn(f,t,d*1.6,ty,.12);t+=d})}
+const NT=[262,330,392,523,392,330,294,349,440,587,440,349];let ni=0;
+function music(){clearInterval(mi);if(!mute)mi=setInterval(()=>tn(NT[ni++%NT.length],0,.5,'triangle',.04),420)}
+addEventListener('pointerdown',()=>{if(!started){started=1;music()}});
+$('#mu').onclick=()=>{mute=!mute;$('#mu').textContent=mute?'🔇':'🔊';music()};
+const speak=w=>{try{const u=new SpeechSynthesisUtterance(w);u.lang='en-US';speechSynthesis.speak(u)}catch(e){}};
+/* ---------- scoring ---------- */
+function award(q,first,ok,w){
+ if(ok){if(first&&!S.seen[q]){S.score+=10;S.ok++}sfx('ok')}
+ else{S.bad++;S.miss[w]=(S.miss[w]||0)+1;sfx('bad')}
+ if(first)S.seen[q]=1;save();hud()}
+const msg=(el,ok)=>el.innerHTML=ok?'<b class="g">Excellent! You got it right!</b>':'<b class="r">Not quite! Try again.</b>';
+/* ---------- screens ---------- */
+const cnt=w=>[0,1,2,3,4].filter(m=>S.done['w'+w+'m'+m]).length;
+function home(){bg(BG0);const all=[0,1,2,3].every(w=>cnt(w)==5);
+ show(`<div class="hero">🏰</div><h1>The Lost Word Kingdom</h1><p>The words have vanished! Travel through 4 magical worlds and bring them back.<br><small>ช่วยกันนำคำศัพท์กลับคืนสู่อาณาจักร!</small></p>
+ <div class="grid">${W.map((w,i)=>{const c=cnt(i),lk=i>0&&cnt(i-1)<5;return `<div class="world ${lk?'lock':''}" data-w="${i}" style="background:${w.bg}"><div class="hero" style="font-size:44px">${lk?'🔒':w.i}</div><h3>World ${i+1}: ${w.n}</h3><div>${w.t}</div><div>${'⭐'.repeat(c)}${'☆'.repeat(5-c)}</div><div>${c==5?'🏅 '+w.b:c+'/5 missions'}</div></div>`}).join('')}
+ <div class="world ${all?'':'lock'}" data-w="boss" style="background:linear-gradient(160deg,#4a0000,#ff4b1f)"><div class="hero" style="font-size:44px">${S.boss?'👑':all?'🐉':'🔒'}</div><h3>FINAL BOSS</h3><div>The Word Dragon</div><div>${S.boss?'Defeated!':all?'Ready!':'Finish all worlds'}</div></div></div>`);
+ st.querySelectorAll('.world').forEach(e=>e.onclick=()=>{if(e.classList.contains('lock'))return;const w=e.dataset.w;w=='boss'?(S.boss?fin():boss()):runWorld(+w)})}
+function runWorld(w){bg(W[w].bg);const m=[0,1,2,3,4].find(m=>!S.done['w'+w+'m'+m]);if(m===undefined)return home();
+ const key='w'+w+'m'+m,idx=W[w].w;
+ show(`<div class="card"><div class="hero">${W[w].h}</div><h2>${W[w].n} · Mission ${m+1}/5</h2><p>${MN[m]}</p><button class="btn" id="go">Start ➜</button></div>`);
+ $('#go').onclick=()=>MS[m](key,idx,()=>{S.done[key]=1;save();hud();sfx('mission');
+  const after=()=>{if(m<4)return runWorld(w);if(!S.badge.includes(w))S.badge.push(w);save();sfx('world');wdone(w)};
+  m?recap(idx,after):after()})}
+function recap(idx,next){show(`<div class="card"><h2>⭐ Mission complete! You earned a magical star!</h2>${idx.map(i=>{const v=V[i];return `<div class="rc"><b>${v[4]} ${v[0]}</b> = ${v[1]}<br><small>📖 ${v[2]}<br>💬 ${v[3]}</small></div>`}).join('')}<button class="btn" id="nx">Continue ➜</button></div>`);$('#nx').onclick=next}
+function wdone(w){const all=[0,1,2,3].every(x=>cnt(x)==5);
+ show(`<div class="card"><div class="hero">🏅</div><h1>World Complete!</h1><h2>Badge: ${W[w].b}</h2><p>${all?'All worlds saved! The Word Dragon is awake… 🐉':'The next world is unlocked!'}</p><button class="btn" id="nx">Back to map</button></div>`);$('#nx').onclick=home}
+function dis(key,idx,done){let r=0;
+ show(`<div class="card"><h2>🔮 Word Discovery</h2><p>Tap each card to reveal its secret! 🔊 = listen</p><div class="cards">${idx.map(i=>{const v=V[i];return `<div class="wc"><div class="big">${v[4]}</div><h3>${v[0]}</h3><div class="sec"><p>🇹🇭 <b>${v[1]}</b></p><p>📖 ${v[2]}</p><p>💬 <i>${v[3]}</i></p></div><button class="ib">🔊</button></div>`}).join('')}</div><button class="btn" id="nx" disabled>Continue ➜</button></div>`);
+ st.querySelectorAll('.wc').forEach((c,k)=>c.onclick=e=>{if(e.target.tagName=='BUTTON'){speak(V[idx[k]][0]);return}if(!c.classList.contains('open')){c.classList.add('open');sfx('ok');if(++r==idx.length)$('#nx').disabled=false}});
+ $('#nx').onclick=done}
+function mat(key,idx,done){const L=sh(idx),R=sh(idx),tried={};let left=idx.length,sel=null;
+ show(`<div class="card"><h2>🔗 Word Matching</h2><p>Drag each English word onto its Thai meaning (or tap, then tap).</p><div class="mt"><div>${L.map(i=>`<div class="chip w" data-i="${i}">${V[i][0]}</div>`).join('')}</div><div>${R.map(i=>`<div class="chip t" data-i="${i}">${V[i][1]}</div>`).join('')}</div></div><div id="fb"></div></div>`);
+ const fb=$('#fb');
+ function tryM(w,t){const i=+w.dataset.i,j=+t.dataset.i,f=!tried[i];if(w.classList.contains('ok'))return;
+  award(key+i,f,i==j,V[i][0]);msg(fb,i==j);
+  if(i==j){w.classList.add('ok');t.classList.add('ok');if(!--left)setTimeout(done,900)}
+  else{tried[i]=1;t.classList.add('shake');setTimeout(()=>t.classList.remove('shake'),400)}
+  if(sel)sel.classList.remove('sel');sel=null}
+ st.querySelectorAll('.w').forEach(w=>w.onpointerdown=e=>{if(w.classList.contains('ok'))return;e.preventDefault();const x0=e.clientX,y0=e.clientY;let g=null;
+  const mv=e=>{if(!g&&Math.hypot(e.clientX-x0,e.clientY-y0)>8){g=w.cloneNode(true);g.classList.add('ghost');document.body.appendChild(g)}if(g){g.style.left=e.clientX+'px';g.style.top=e.clientY+'px'}};
+  const up=e=>{removeEventListener('pointermove',mv);removeEventListener('pointerup',up);removeEventListener('pointercancel',up);
+   if(g){g.remove();const el=document.elementFromPoint(e.clientX,e.clientY),t=el&&el.closest('.t');if(t&&!t.classList.contains('ok'))tryM(w,t)}
+   else{if(sel)sel.classList.remove('sel');sel=w;w.classList.add('sel')}};
+  addEventListener('pointermove',mv);addEventListener('pointerup',up);addEventListener('pointercancel',up)});
+ st.querySelectorAll('.t').forEach(t=>t.onclick=()=>{if(sel&&!t.classList.contains('ok'))tryM(sel,t)})}
+function typ(key,items,prm,done,hint){let k=0;(function one(){if(k>=items.length)return done();
+ const v=V[items[k]],q=key+k,a=v[0];let first=1;
+ show(`<div class="card">${prm(v,k)}<div class="row"><input id="ans" autocorrect="off" enterkeyhint="done" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type here..."><button class="btn" id="go">Check</button></div><div id="fb"></div>${hint?'<button class="btn ghost" id="hn">💡 Hint (Thai)</button>':''}<div><small>Question ${k+1}/${items.length}</small></div></div>`);
+ const inp=$('#ans'),fb=$('#fb'),go=$('#go');inp.focus();
+ if(hint)$('#hn').onclick=()=>{first=0;fb.innerHTML=`<b>🇹🇭 ${v[1]}</b>`};
+ go.onclick=()=>{const t=inp.value.trim();if(!t)return;
+  if(norm(t)==norm(a)){award(q,first,1,a);msg(fb,1);inp.disabled=true;go.textContent='Next ➜';go.onclick=()=>{k++;one()}}
+  else{award(q,first,0,a);first=0;msg(fb,0);fb.innerHTML+='<div class="lt2">'+[...t].map((c,i)=>`<span class="${c.toLowerCase()==(a[i]||'').toLowerCase()?'good':'bad'}">${c==' '?'&nbsp;':c}</span>`).join('')+'</div>';inp.select()}};
+ inp.onkeydown=e=>{if(e.key=='Enter')go.onclick()}})()}
+function mis(key,idx,done){let k=0;const L=sh(idx);(function one(){if(k>=L.length)return done();
+ const v=V[L[k]],q=key+k,a=v[0];let first=1;
+ let hid=[...a].map(c=>c!=' '&&Math.random()<.5);if(hid.filter(x=>x).length<2)hid=[...a].map((c,i)=>c!=' '&&i%2);
+ show(`<div class="card"><h2>🧩 Missing Letters</h2><div class="big">${v[4]}</div><p>🇹🇭 ${v[1]}</p><div>${[...a].map((c,i)=>c==' '?'<span class="gap"></span>':hid[i]?`<input class="lt" maxlength="1" data-c="${c}">`:`<span class="lt">${c}</span>`).join('')}</div><button class="btn" id="go">Check</button><div id="fb"></div></div>`);
+ const ins=[...st.querySelectorAll('input.lt')],fb=$('#fb'),go=$('#go');ins[0].focus();
+ ins.forEach((x,i)=>x.oninput=()=>{if(x.value&&ins[i+1])ins[i+1].focus()});
+ go.onclick=()=>{let all=1;ins.forEach(x=>{const ok=x.value.toLowerCase()==x.dataset.c.toLowerCase();x.classList.toggle('good',ok);x.classList.toggle('bad',!ok);if(!ok)all=0});
+  award(q,first,all,a);msg(fb,all);if(all){go.textContent='Next ➜';go.onclick=()=>{k++;one()}}else first=0}})()}
+const MS=[dis,mat,
+ (k,i,d)=>typ(k,sh(i),(v)=>`<h2>⌨️ Spelling Challenge</h2><div class="big">${v[4]}</div><p>Thai: <b>${v[1]}</b></p><p>Type the English word.</p>`,d),
+ (k,i,d)=>typ(k,sh(i),(v)=>`<h2>🔎 Definition Detective</h2><p>Which word am I?</p><p style="font-size:20px">“${v[2]}”</p>`,d),
+ mis];
+function boss(){bg('linear-gradient(160deg,#4a0000,#ff4b1f)');const L=sh(B);
+ show(`<div class="card"><div class="hero">🐉</div><h2>FINAL BOSS: The Word Dragon</h2><p>Read each sentence and type the missing word. Words come from all 4 worlds!</p><button class="btn" id="go">Fight! ⚔️</button></div>`);
+ $('#go').onclick=()=>typ('boss',L.map(b=>b[0]),(v,k)=>`<h2>🐉 Boss Round</h2><p style="font-size:21px">${L[k][1]}</p>`,()=>{S.boss=1;S.done.boss=1;save();hud();sfx('win');fin()},1)}
+function fin(){bg('linear-gradient(160deg,#f7971e,#7b2ff7)');const p=Math.round(S.score/MAX*100);
+ show(`<div class="card"><div class="hero">👑</div><h1>VOCABULARY MASTER!</h1><p style="font-size:34px">🎉🏆✨🎊🌟</p><h2>Final score: ${S.score}/${MAX} (${p}%)</h2><p>✅ ${S.ok} correct · ❌ ${S.bad} wrong</p><p>The Lost Word Kingdom is saved. Well done, adventurer!</p><button class="btn" id="d">📊 Results</button><button class="btn" id="h">🏰 Map</button></div>`);
+ $('#d').onclick=dash;$('#h').onclick=home}
+function dash(){const m=Object.entries(S.miss).sort((a,b)=>b[1]-a[1]),t=S.ok+S.bad,d=document.createElement('div');d.className='modal';
+ d.innerHTML=`<div class="card"><h2>📊 Teacher Dashboard</h2><span class="stat">🏆 Score ${S.score}/${MAX}</span><span class="stat">⭐ Missions ${n()}/${TOT}</span><span class="stat">✅ ${S.ok}</span><span class="stat">❌ ${S.bad}</span><span class="stat">🎯 Accuracy ${t?Math.round(S.ok/t*100):0}%</span><span class="stat">📈 Final ${Math.round(S.score/MAX*100)}%</span>
+ <h3>Worlds</h3>${W.map((w,i)=>`<div>${w.i} ${w.n}: ${cnt(i)}/5 ${cnt(i)==5?'🏅':''}</div>`).join('')}<div>🐉 Boss: ${S.boss?'Defeated':'Not yet'}</div>
+ <h3>Words students struggled with</h3>${m.length?m.map(([w,c])=>`<div>• <b>${w}</b> (${V.find(v=>v[0]==w)[1]}) — ${c} mistake${c>1?'s':''}</div>`).join(''):'<div>No mistakes recorded yet.</div>'}
+ <h3>Summary</h3><div>${n()==TOT?'Game finished — title Vocabulary Master unlocked.':'Game in progress.'} Total vocabulary: 12 words.</div>
+ <button class="btn ghost" id="cl">Close</button><button class="btn" id="rs">🔄 Restart Game</button></div>`;
+ document.body.appendChild(d);$('#cl').onclick=()=>d.remove();
+ d.querySelector('#rs').onclick=function(){if(!this.dataset.c){this.dataset.c=1;this.textContent='⚠️ Tap again to erase everything';return}S=init();save();hud();d.remove();home()}}
+$('#ds').onclick=dash;$('#hm').onclick=home;hud();home();
+</script></body></html>

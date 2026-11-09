@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Vocabulary Adventure – Spelling & Translation Challenge</title>
+<style>
+:root{--bg:linear-gradient(160deg,#2b1055,#7597de)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font:16px/1.45 'Segoe UI',system-ui,'Noto Sans Thai',sans-serif;color:#fff;background:var(--bg) fixed;transition:background .6s}
+header{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;padding:8px 10px;background:#000a;backdrop-filter:blur(6px)}
+.pill{background:#fff2;padding:3px 10px;border-radius:20px;font-weight:700;font-size:14px}
+#pb{flex:1 1 100%;height:10px;background:#fff3;border-radius:6px;overflow:hidden}
+#bar{height:100%;width:0;background:linear-gradient(90deg,#ffd54a,#ff7bd5);transition:width .5s}
+main{max-width:860px;margin:0 auto;padding:12px;text-align:center}
+h1{font-size:clamp(26px,6vw,42px);margin:8px 0;text-shadow:0 3px 12px #0008}h2{margin:6px 0}
+.card{background:#0007;border:2px solid #fff4;border-radius:20px;padding:16px;margin:12px 0;animation:pop .4s}
+.btn{background:linear-gradient(#ffd54a,#ff9800);color:#3a2100;border:0;border-radius:14px;padding:10px 20px;font-size:17px;font-weight:800;cursor:pointer;margin:6px;box-shadow:0 4px 0 #b36b00}
+.btn:active{transform:translateY(3px);box-shadow:none}
+.btn.ghost{background:#fff3;color:#fff;box-shadow:none;font-size:14px;padding:6px 12px}
+.ib{background:#fff3;border:0;color:#fff;border-radius:10px;font-size:18px;padding:4px 10px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.world{border-radius:18px;padding:14px;cursor:pointer;border:2px solid #fff5;transition:.2s}
+.world:hover{transform:translateY(-4px) scale(1.03)}.world.lock{filter:grayscale(1) brightness(.6);cursor:not-allowed}
+.hero{font-size:58px;animation:bob 2s ease-in-out infinite}
+.clue{font-size:clamp(24px,6vw,34px);font-weight:800;margin:10px;color:#ffe680}
+input#ans{font-size:22px;padding:10px;border-radius:12px;border:3px solid #ffd54a;width:min(340px,90%);text-align:center}
+.g{color:#7dffa0;font-size:19px}.r{color:#ff8a8a;font-size:19px}
+#fb{min-height:30px;margin:6px}
+.lt2 span,.lt{display:inline-block;min-width:30px;font:700 24px monospace;margin:2px;padding:2px 4px;border-radius:6px;background:#fff2}
+.good{background:#1fa34a!important;color:#fff!important}.bad{background:#d33!important;color:#fff!important}
+input.lt{width:38px;text-align:center;border:2px solid #ffd54a;color:#000;background:#fff}
+.gap{display:inline-block;width:22px}
+.rc{text-align:left;background:#fff2;border-radius:12px;padding:8px 12px;margin:8px 0}
+.stat{display:inline-block;background:#fff2;border-radius:12px;padding:8px 12px;margin:4px;font-weight:700}
+.fl{position:fixed;top:100%;font-size:26px;opacity:.5;pointer-events:none;animation:rise 12s linear infinite}
+@keyframes pop{from{transform:scale(.9);opacity:0}}@keyframes bob{50%{transform:translateY(-10px)}}@keyframes rise{to{top:-10%;transform:rotate(360deg)}}
+html{-webkit-text-size-adjust:100%}
+body{min-height:100vh;min-height:100dvh;-webkit-tap-highlight-color:transparent;padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right);padding-bottom:env(safe-area-inset-bottom)}
+header{padding-top:max(8px,env(safe-area-inset-top))}
+button,.world,input,.chip{touch-action:manipulation}.chip.w{touch-action:none}
+.btn,.ib{min-height:44px}.ib{min-width:44px}
+input.lt{font-size:22px;height:46px;width:40px;padding:0}input#ans{font-size:22px}
+@media(min-width:768px){main{max-width:960px;font-size:18px}.clue{font-size:40px}.lt2 span,.lt{font-size:30px;min-width:38px}input.lt{width:48px;height:54px;font-size:28px}.btn{font-size:20px;padding:12px 26px}.chip{font-size:19px}}
+@media(max-width:480px){.pill{font-size:12px;padding:2px 8px}main{padding:8px}.card{padding:12px;border-radius:16px}input.lt{width:34px;height:42px;margin:1px}.lt2 span,.lt{min-width:26px;font-size:20px}.grid{grid-template-columns:1fr 1fr}.world h3{font-size:15px}.hero{font-size:46px}}
+@media(max-height:480px) and (orientation:landscape){.hero,.big{font-size:36px;animation:none}header{position:static}}
+</style></head><body>
+<div class="fl" style="left:8%">✨</div><div class="fl" style="left:38%;animation-delay:3s">⭐</div><div class="fl" style="left:66%;animation-delay:6s">✨</div><div class="fl" style="left:90%;animation-delay:9s">🦋</div>
+<header><span class="pill">🏆 <span id="sc">0</span></span><span class="pill">✅ <span id="ok">0</span></span><span class="pill">❌ <span id="bd">0</span></span><span class="pill" id="ws"></span><span class="pill" id="cur">Mission: –</span>
+<button class="ib" id="hm" title="Map">🏰</button><button class="ib" id="ds" title="Results">📊</button><div id="pb"><div id="bar"></div></div></header>
+<main id="stage"></main>
+<script>
+/* v: word, Thai, definition, emoji, accepted Thai alternatives */
+const V=[
+['horizontal axis','แกนแนวนอน','The horizontal number line on the coordinate plane.','↔️',['แกนนอน']],
+['vertical axis','แกนแนวตั้ง','The vertical number line on the coordinate plane.','↕️',['แกนตั้ง']],
+['Cartesian plane','ระนาบที่ลากเส้นจำนวน','A flat grid with two number lines that cross, used to show points.','📈',['ระนาบคาร์ทีเซียน','ระนาบพิกัดคาร์ทีเซียน','ระนาบพิกัด']],
+['thermometer','เทอร์โมมิเตอร์','A device used for measuring temperature.','🌡️',['เทอร์มอมิเตอร์','เทอร์โมมิเตอร์วัดอุณหภูมิ','ปรอทวัดไข้','ปรอทวัดอุณหภูมิ']],
+['energy','พลังงาน','The power and ability to be physically and mentally active.','⚡',[]],
+['heat energy','พลังงานความร้อน','The warmth that comes from hot things such as the sun or fire.','🔥',['พลังงานจากความร้อน','พลังงานความร้อน']],
+['geographer','นักภูมิศาสตร์','A scientist who studies the Earth, its land and its places.','🗺️',[]],
+['atmosphere','บรรยากาศ','The envelope of gases surrounding the earth or another planet.','🌍',['ชั้นบรรยากาศ']],
+['distribution','การกระจาย','The way something is shared or spread out over an area.','📊',['การกระจายตัว','การแจกจ่าย']],
+['population','ประชากร','All the people who live in a place.','👨‍👩‍👧‍👦',[]],
+['crime','อาชญากรรม','An action or activity that is against the law.','🚔',['การก่ออาชญากรรม']],
+['wildlife','สัตว์ป่า','Animals that live in natural condition.','🐯',[]]];
+const W=[
+{n:'Maths Kingdom',i:'📐',h:'🧙‍♂️',b:'Coordinate Wizard',w:[0,1,2],bg:'linear-gradient(160deg,#1e3c72,#2a9df4)'},
+{n:'Science Laboratory',i:'🔬',h:'👩‍🔬',b:'Energy Scientist',w:[3,4,5],bg:'linear-gradient(160deg,#8e2de2,#ff6a88)'},
+{n:'Social Studies Realm',i:'🧭',h:'🧝',b:'Realm Explorer',w:[6,7,8],bg:'linear-gradient(160deg,#134e5e,#71b280)'},
+{n:'Language Forest',i:'🌳',h:'🦊',b:'Forest Guardian',w:[9,10,11],bg:'linear-gradient(160deg,#0f3d1e,#c6a700)'}];
+const MN=[['🧩 Missing Letters','พิมพ์ตัวอักษรที่หายไป · Type the missing letters.'],['✍️ Spell the Word','พิมพ์คำศัพท์ภาษาอังกฤษ · Type the English word for this Thai meaning.'],['🇹🇭 Thai Translation Challenge','พิมพ์ความหมายภาษาไทย · Type the Thai meaning (use a Thai keyboard).'],['🔎 Definition Detective','พิมพ์คำศัพท์ที่ตรงกับความหมาย · Type the word that matches the definition.']];
+const BG0='linear-gradient(160deg,#2b1055,#7597de)',TOT=17,MAX=600,KEY='lwk_spell_v1';
+const $=s=>document.querySelector(s),st=$('#stage');
+const sh=a=>{a=a.slice();for(let i=a.length;i>1;){const j=Math.random()*i--|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const norm=s=>s.toLowerCase().replace(/\s+/g,' ').trim();
+const thai=s=>s.replace(/[\s\u200b-\u200d\u2060\ufeff]/g,'').normalize('NFC');
+const init=()=>({score:0,ok:0,bad:0,done:{},seen:{},miss:{},badge:[],best:0});
+let S;try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}S=S||init();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const n=()=>Object.keys(S.done).length,cnt=w=>[0,1,2,3].filter(m=>S.done['w'+w+'m'+m]).length;
+function hud(cur){$('#sc').textContent=S.score;$('#ok').textContent=S.ok;$('#bd').textContent=S.bad;$('#bar').style.width=n()/TOT*100+'%';
+ $('#ws').textContent=W.map((w,i)=>w.i+(cnt(i)==4?'✅':cnt(i)+'/4')).join(' ')+' 🐉'+(S.done.fc?'✅':'');if(cur)$('#cur').textContent=cur}
+const show=h=>{st.innerHTML=h;scrollTo(0,0)},bg=b=>document.body.style.setProperty('--bg',b);
+function award(q,first,ok,w){if(ok){if(first&&!S.seen[q]){S.score+=10;S.ok++}}else{S.bad++;S.miss[w]=(S.miss[w]||0)+1}if(first)S.seen[q]=1;save();hud()}
+/* ---------- one question ---------- */
+function ask(mode,i,q,next,pos){const v=V[i],a=v[0];let first=1;
+ const clue=mode==0?`<div style="font-size:48px">${v[3]}</div><p>🇹🇭 ${v[1]}</p>`:mode==1?`<div class="clue">${v[1]}</div>`:mode==2?`<div class="clue">${a}</div>`:`<div class="clue" style="font-size:22px">“${v[2]}”</div>`;
+ let box;
+ if(mode==0){const L=[...a].map((c,x)=>c==' '?-1:x).filter(x=>x>=0),c=Math.min(L.length-1,[1,1,2,3,4][Math.random()*5|0]),H=new Set(sh(L).slice(0,c));
+  box=`<div>${[...a].map((c,x)=>c==' '?'<span class="gap"></span>':H.has(x)?`<input class="lt" maxlength="1" data-c="${c}" autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="next">`:`<span class="lt">${c}</span>`).join('')}</div>`}
+ else box=`<input id="ans" lang="${mode==2?'th':'en'}" autocorrect="off" enterkeyhint="done" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="${mode==2?'พิมพ์ภาษาไทย…':'Type here...'}">`;
+ show(`<div class="card"><h2>${MN[mode][0]}</h2><p>${MN[mode][1]}</p>${clue}${box}<div><button class="btn" id="go">Check ✔</button></div><div id="fb"></div><button class="btn ghost" id="sk">Skip (0 points)</button><div><small>Question ${pos}</small></div></div>`);
+ const fb=$('#fb'),go=$('#go'),ins=[...st.querySelectorAll('input.lt')],inp=$('#ans');(inp||ins[0]).focus({preventScroll:true});st.querySelectorAll('input').forEach(x=>x.addEventListener('focus',()=>setTimeout(()=>x.scrollIntoView({block:'center',behavior:'smooth'}),300)));
+ ins.forEach((x,k)=>{x.onfocus=()=>x.select();x.oninput=()=>{if(x.value&&ins[k+1])ins[k+1].focus()};x.onkeydown=e=>{if(e.key=='Backspace'&&!x.value&&ins[k-1])ins[k-1].focus();if(e.key=='Enter')go.onclick()}});
+ const fin=ok=>{go.textContent='Next ➜';go.onclick=()=>next();$('#sk').remove();if(inp)inp.disabled=true;ins.forEach(x=>x.disabled=true)};
+ go.onclick=()=>{let ok,t='';
+  if(mode==0){ok=1;ins.forEach(x=>{const r=x.value.toLowerCase()==x.dataset.c.toLowerCase();x.classList.toggle('good',r);x.classList.toggle('bad',!r);if(!r)ok=0})}
+  else{t=inp.value.trim();if(!t)return;ok=mode==2?[v[1],...v[4]].some(x=>thai(x)==thai(t)):norm(t)==norm(a)}
+  award(q,first,ok,a);
+  if(ok){fb.innerHTML='<b class="g">Excellent! Correct spelling!</b>'+(mode==3?`<div>🇹🇭 ${v[1]}</div>`:'');fin()}
+  else{first=0;fb.innerHTML='<b class="r">Try again! Check your spelling.</b>'+(mode==1||mode==3?'<div class="lt2">'+[...t].map((c,x)=>`<span class="${c.toLowerCase()==(a[x]||'').toLowerCase()?'good':'bad'}">${c==' '?'&nbsp;':c}</span>`).join('')+'</div>':'');if(inp)inp.select()}};
+ if(inp)inp.onkeydown=e=>{if(e.key=='Enter')go.onclick()};
+ $('#sk').onclick=()=>{award(q,first,0,a);first=0;fb.innerHTML=`<b class="r">Answer: ${a} = ${v[1]}</b>`;fin()}}
+function seq(list,modeOf,key,done){let k=0;(function one(){if(k>=list.length)return done();ask(modeOf(k),list[k],key+k,()=>{k++;one()},(k+1)+'/'+list.length)})()}
+/* ---------- screens ---------- */
+function home(){bg(BG0);hud('Mission: –');const all=[0,1,2,3].every(w=>cnt(w)==4);
+ show(`<div class="hero">🏰</div><h1>Vocabulary Adventure</h1><p>Type your answers to unlock all 4 fantasy worlds!<br><small>พิมพ์คำตอบเพื่อปลดล็อกโลกแฟนตาซีทั้ง 4 โลก</small></p>
+ <div class="grid">${W.map((w,i)=>{const c=cnt(i),lk=i>0&&cnt(i-1)<4;return `<div class="world ${lk?'lock':''}" data-w="${i}" style="background:${w.bg}"><div class="hero" style="font-size:42px">${lk?'🔒':w.i}</div><h3>World ${i+1}: ${w.n}</h3><div>${'⭐'.repeat(c)}${'☆'.repeat(4-c)}</div><div>${c==4?'🏅 '+w.b:c+'/4 missions'}</div></div>`}).join('')}
+ <div class="world ${all?'':'lock'}" data-w="fc" style="background:linear-gradient(160deg,#4a0000,#ff4b1f)"><div class="hero" style="font-size:42px">${S.done.fc?'👑':all?'🐉':'🔒'}</div><h3>FINAL CHALLENGE</h3><div>${S.done.fc?'Completed!':all?'Ready!':'Finish all 4 worlds'}</div></div></div>`);
+ st.querySelectorAll('.world').forEach(e=>e.onclick=()=>{if(e.classList.contains('lock'))return;const w=e.dataset.w;w=='fc'?(S.done.fc?results():final()):runW(+w)})}
+function runW(w){bg(W[w].bg);const m=[0,1,2,3].find(m=>!S.done['w'+w+'m'+m]);if(m===undefined)return home();
+ const key='w'+w+'m'+m,idx=W[w].w;hud(`${W[w].n} · Mission ${m+1}/4`);
+ show(`<div class="card"><div class="hero">${W[w].h}</div><h2>${W[w].n} · Mission ${m+1}/4</h2><p>${MN[m][0]}</p><p>${MN[m][1]}</p><button class="btn" id="go">Start ➜</button></div>`);
+ $('#go').onclick=()=>seq(sh(idx),()=>m,key,()=>{S.done[key]=1;save();hud();
+  show(`<div class="card"><h2>⭐ Mission complete! You earned a star!</h2>${idx.map(i=>{const v=V[i];return `<div class="rc"><b>${v[3]} ${v[0]}</b> = ${v[1]}<br><small>📖 ${v[2]}</small></div>`}).join('')}<button class="btn" id="nx">Continue ➜</button></div>`);
+  $('#nx').onclick=()=>{if(m<3)return runW(w);if(!S.badge.includes(w))S.badge.push(w);save();
+   const all=[0,1,2,3].every(x=>cnt(x)==4);show(`<div class="card"><div class="hero">🏅</div><h1>World Complete!</h1><h2>Badge: ${W[w].b}</h2><p>${all?'All worlds complete! The Final Challenge is open! 🐉':'The next world is unlocked!'}</p><button class="btn" id="b">Back to map</button></div>`);$('#b').onclick=home}})}
+function final(){bg('linear-gradient(160deg,#4a0000,#ff4b1f)');hud('Final Challenge');
+ show(`<div class="card"><div class="hero">🐉</div><h2>FINAL CHALLENGE</h2><p>All 12 words, all 4 modes mixed together. Good luck!</p><button class="btn" id="go">Start ⚔️</button></div>`);
+ $('#go').onclick=()=>{const L=sh([0,1,2,3,4,5,6,7,8,9,10,11]),M=sh(L.map((_,k)=>k%4));seq(L,k=>M[k],'fc',()=>{S.done.fc=1;S.best=Math.max(S.best||0,S.score);save();hud();results()})}}
+function results(){bg('linear-gradient(160deg,#f7971e,#7b2ff7)');const t=S.ok+S.bad,m=Object.entries(S.miss).sort((a,b)=>b[1]-a[1]),done=!!S.done.fc;
+ show(`<div class="card"><div class="hero">${done?'👑':'📊'}</div><h1>${done?'VOCABULARY MASTER!':'Your Results'}</h1>
+ <span class="stat">🏆 Score ${S.score}/${MAX}</span><span class="stat">🎯 Accuracy ${t?Math.round(S.ok/t*100):0}%</span><span class="stat">⭐ Missions ${n()}/${TOT}</span><span class="stat">✅ ${S.ok}</span><span class="stat">❌ ${S.bad}</span><span class="stat">🏅 Badges ${S.badge.length}/4</span>
+ <p>${S.badge.map(i=>'🏅 '+W[i].b).join(' · ')}${done?' · 👑 Vocabulary Master':''}</p>
+ <h3>Words that need more practice</h3>${m.length?m.map(([w,c])=>{const v=V.find(x=>x[0]==w);return `<div class="rc"><b>${w}</b> = ${v[1]} — ${c} mistake${c>1?'s':''}<br><small>📖 ${v[2]}</small></div>`}).join(''):'<p>No mistakes yet. Great job!</p>'}
+ <button class="btn" id="pa">▶ Play Again</button><button class="btn ghost" id="rs">🔄 Restart Game</button><button class="btn ghost" id="h">🏰 Map</button></div>`);
+ $('#h').onclick=home;
+ $('#pa').onclick=()=>{const b=Math.max(S.best||0,S.score);S=init();S.best=b;save();home()};
+ $('#rs').onclick=function(){if(!this.dataset.c){this.dataset.c=1;this.textContent='⚠️ Tap again to erase everything';return}S=init();save();home()}}
+$('#ds').onclick=results;$('#hm').onclick=home;home();
+</script></body></html>
